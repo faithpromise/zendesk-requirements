@@ -1,0 +1,20 @@
+<header>
+  <span class="Widget-action js_show_task_form">add requirement</span>
+  <h3>Requirements</h3>
+</header>
+
+<ol class="Requirement-list">
+  {{#each requirements}}
+  <li class="Requirement">
+      <h2 class="Requirement-title">{{title}}</h2>
+      <div class="Requirement-description js_edit_requirement" id="fp_requirement_description_{{id}}" data-requirement-id="{{id}}">{{#if body}} {{body}} {{else}} edit {{/if}}</div>
+      <form class="is-hidden js_save_requirement" id="fp_requirement_form_{{id}}" data-requirement-id="{{id}}">
+        <input type="hidden" name="title" value="{{title}}">
+        <input type="hidden" name="sort" value="{{sort}}">
+        <textarea class="Requirement-textarea" id="fp_requirement_body_{{id}}" name="body">{{body}}</textarea>
+        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-link btn-danger js_cancel_edit" type="button" data-requirement-id="{{id}}">cancel</button>
+      </form>
+  </li>
+  {{/each}}
+</ol>
