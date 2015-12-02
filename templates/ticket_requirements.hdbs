@@ -1,20 +1,32 @@
 <header>
-  <span class="Widget-action js_show_task_form">add requirement</span>
+  <span class="Widget-action js_new">add requirement</span>
   <h3>Requirements</h3>
 </header>
 
-<ol class="Requirement-list">
+<table class="Requirement-list">
   {{#each requirements}}
-  <li class="Requirement">
-      <h2 class="Requirement-title">{{title}}</h2>
-      <div class="Requirement-description js_edit_requirement" id="fp_requirement_description_{{id}}" data-requirement-id="{{id}}">{{#if body}} {{body}} {{else}} edit {{/if}}</div>
-      <form class="is-hidden js_save_requirement" id="fp_requirement_form_{{id}}" data-requirement-id="{{id}}">
-        <input type="hidden" name="title" value="{{title}}">
-        <input type="hidden" name="sort" value="{{sort}}">
-        <textarea class="Requirement-textarea" id="fp_requirement_body_{{id}}" name="body">{{body}}</textarea>
-        <button class="btn btn-primary" type="submit">Save</button>
-        <button class="btn btn-link btn-danger js_cancel_edit" type="button" data-requirement-id="{{id}}">cancel</button>
-      </form>
-  </li>
+    <tr class="Requirement-heading">
+      <td class="Requirement">
+        <h2 class="Requirement-title js_edit" title="Edit" data-requirement-id="{{id}}">{{title}}</h2>
+        <span class="Requirement-description js_edit_body_inline" id="fp_requirement_description_{{id}}" title="Edit answer" data-requirement-id="{{id}}">
+          {{#if body}} {{body}} {{else}} <span class="u-link">add answer</span> {{/if}}
+        </span>
+      </td>
+      <td class="Requirement-trash">
+        <img class="Requirement-trash-icon js_delete" src="{{assetURL 'trash.png'}}" data-requirement-id="{{id}}" data-requirement-title="{{title}}" title="Remove requirement">
+      </td>
+    </tr>
+    <tr class="is-hidden" id="fp_requirement_form_{{id}}">
+      <td colspan="2">
+        <form class="js_save" data-requirement-id="{{id}}">
+          <input type="hidden" name="id" value="{{id}}">
+          <input type="hidden" name="title" value="{{title}}">
+          <input type="hidden" name="sort" value="{{sort}}">
+          <textarea class="Requirement-textarea" id="fp_requirement_body_{{id}}" name="body">{{body}}</textarea>
+          <button class="btn btn-primary" type="submit">Save</button>
+          <button class="btn btn-link btn-danger js_cancel_edit" type="button" data-requirement-id="{{id}}">cancel</button>
+        </form>
+      </td>
+    </tr>
   {{/each}}
-</ol>
+</table>

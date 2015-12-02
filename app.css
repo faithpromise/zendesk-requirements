@@ -2,6 +2,17 @@
   display: none !important;
 }
 
+.u-link {
+  color:       #1a6690;
+  cursor:      pointer;
+  white-space: nowrap;
+
+  &:hover {
+    color:           #005580;
+    text-decoration: underline;
+  }
+}
+
 /*
   Override Zendesk styles
 
@@ -39,12 +50,21 @@ header {
   ================================================== */
 
 .Requirement-list {
-  margin-left: 0;
-  list-style:  none;
+  width: 100%;
+
+  td {
+    padding:        5px 3px;
+    vertical-align: middle !important;
+  }
+
+  .Requirement-heading:hover td {
+    background-color: #ececec;
+    transition:       .1s background-color ease-in-out;
+  }
 }
 
 .Requirement {
-  margin-bottom: 20px;
+  padding: 10px 0;
 }
 
 .Requirement-title {
@@ -53,12 +73,15 @@ header {
   line-height:  inherit;
   font-size:    inherit;
   font-weight:  bold;
+  cursor:       pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .Requirement-description {
-  display:     inline;
-  white-space: pre-line;
-  cursor:      pointer;
+  cursor: pointer;
 }
 
 .Requirement-textarea {
@@ -66,4 +89,12 @@ header {
   width:       100%;
   margin:      2px 0 8px;
   line-height: 18px;
+}
+
+.Requirement-trash {
+
+}
+
+.Requirement-trash-icon {
+  cursor: pointer;
 }

@@ -1,0 +1,22 @@
+<form class="property_box js_save" data-requirement-id="{{id}}">
+
+  <header>
+    <h3>{{#if id}}Edit Task{{else}}New Requirement{{/if}}</h3>
+  </header>
+
+  <div class="Form-field">
+    <label class="Form-label" for="fp_requirement_title_{{zendesk_ticket_id}}">Question / Requirement</label>
+    <input class="Form-field" id="fp_requirement_title_{{zendesk_ticket_id}}" type="text" name="title" placeholder="Enter a question" value="{{title}}" required>
+  </div>
+
+  <div class="Form-field">
+    <label class="Form-label" for="fp_requirement_body_{{zendesk_ticket_id}}">Answer</label>
+    <textarea class="Form-field" id="fp_requirement_body_{{zendesk_ticket_id}}" type="text" name="body" placeholder="Answer..." value="{{title}}"></textarea>
+  </div>
+
+  <div class="Form-actions">
+    <button class="btn btn-primary" type="submit">{{#if id}}Save Changes{{else}}Add Requirement{{/if}}</button>
+    <button class="btn btn-link btn-danger js_cancel_new" type="button">cancel</button>
+  </div>
+
+</form>

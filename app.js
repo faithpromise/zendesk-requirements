@@ -2,34 +2,37 @@
 
     return {
         events: {
-            'app.activated':               'on_app_activated',
-            'click .js_edit_requirement':  'edit',
-            'submit .js_save_requirement': 'save',
-            'click .js_cancel_edit':       'cancel_edit'
+            'app.activated':              'on_app_activated',
+            'click .js_new':              'new',
+            'click .js_cancel_new':       'cancel_new',
+            'click .js_edit':             'edit',
+            'click .js_edit_body_inline': 'edit_body_inline',
+            'submit .js_save':            'save',
+            'click .js_cancel_edit':      'cancel_edit'
         },
 
         requests: {
 
-            get_requirements: function (ticket_ids) {
+            requirements: function (ticket_ids) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/requirements',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements',
                     data:     { zendesk_ticket_ids: ticket_ids },
                     dataType: 'json',
                     cors:     true
                 };
             },
 
-            get_ticket_requirements: function (ticket_id) {
+            requirement: function (requirement_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements/' + requirement_id,
                     dataType: 'json',
                     cors:     true
                 };
             },
 
-            create: function (ticket_id, data) {
+            create: function (data) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements',
                     type:     'POST',
                     dataType: 'json',
                     data:     data,
@@ -37,9 +40,9 @@
                 };
             },
 
-            update: function (ticket_id, requirement_id, data) {
+            update: function (data, requirement_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements/' + requirement_id,
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements/' + requirement_id,
                     type:     'PATCH',
                     dataType: 'json',
                     data:     data,
@@ -47,9 +50,9 @@
                 };
             },
 
-            delete: function (ticket_id, requirement_id) {
+            delete: function (requirement_id) {
                 return {
-                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements/' + requirement_id,
+                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements/' + requirement_id,
                     type: 'DELETE',
                     cors: true
                 };
@@ -72,55 +75,94 @@
 
             var ticket_id = this.ticket().id();
 
-            this.ajax('get_ticket_requirements', ticket_id).done(function (data) {
+            this.ajax('requirements', ticket_id).done(function (result) {
 
-                data.no_results = data.requirements.length === 0;
+                var view_data = {
+                    no_results:   result.data.length === 0,
+                    requirements: result.data
+                };
 
-                this.switchTo('ticket_requirements', data);
+                this.switchTo('ticket_requirements', view_data);
             });
 
         },
 
-        delete: function (event) {
+        new: function () {
 
-            var is_sidebar     = this.currentLocation() === 'ticket_sidebar',
-                //is_calendar    = this.currentLocation() === 'nav_bar',
-                requirement_id = this.$(event.target).data('requirement-id'),
-                ticket_id      = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
+            var ticket_id      = this.ticket().id(),
+                title_selector = '#fp_requirement_title_' + ticket_id,
+                data           = {
+                    ticket_id: this.ticket().id()
+                };
 
-            this.ajax('delete_requirement', ticket_id, requirement_id).done(function () {
+            this.switchTo('requirement_form', data);
+            this.$(title_selector).focus();
 
-                if (is_sidebar) {
-                    this.load_ticket_sidebar();
+        },
+
+        save: function (event) {
+
+            var self           = this,
+                $target        = this.$(event.currentTarget),
+                requirement_id = $target.data('requirement-id'),
+                $title         = this.$($target.find('[name=title]')),
+                $body          = this.$($target.find('[name=body]')),
+                $sort          = this.$($target.find('[name=sort]')),
+                mode           = requirement_id ? 'update' : 'create',
+                data           = {
+                    zendesk_ticket_id: this.ticket().id(),
+                    title:             $title.val(),
+                    body:              $body.val(),
+                    sort:              $sort.length ? $sort.val() : 99,
+                    created_by_email:  this.currentUser().email()
+                };
+
+            event.preventDefault();
+
+            self.ajax(mode, data, requirement_id).done(function () {
+
+                if (mode === 'create') {
+                    services.notify('Requirement updated', 'notice');
                 }
-
-                //if (is_calendar) {
-                //    this.load_calendar();
-                //}
+                self.load_ticket_sidebar();
 
             });
 
         },
 
-        edit: function (event) {
+        cancel_new: function () {
+            this.load_ticket_sidebar();
+        },
 
-            var $target        = this.$(event.target),
+        edit: function(event) {
+
+            var requirement_id = this.$(event.currentTarget).data('requirement-id');
+
+            this.ajax('requirement', requirement_id).done(function (result) {
+                this.switchTo('requirement_form', result.data);
+            });
+
+        },
+
+        edit_body_inline: function (event) {
+
+            console.log(event);
+
+            var $target        = this.$(event.currentTarget),
                 requirement_id = $target.data('requirement-id'),
                 $description   = this.$('#fp_requirement_description_' + requirement_id),
                 $textarea      = this.$('#fp_requirement_body_' + requirement_id),
                 $form          = this.$('#fp_requirement_form_' + requirement_id);
 
             $form.removeClass('is-hidden');
-            console.log($textarea);
             $textarea.css('height', Math.max(70, $description.outerHeight() + 20) + 'px').focus();
-            console.log('$description.outerHeight()', $description.outerHeight());
             $description.addClass('is-hidden');
 
         },
 
         cancel_edit: function (event) {
 
-            var $target        = this.$(event.target),
+            var $target        = this.$(event.currentTarget),
                 requirement_id = $target.data('requirement-id'),
                 $description   = this.$('#fp_requirement_description_' + requirement_id),
                 $body          = this.$('#fp_requirement_body_' + requirement_id),
@@ -140,61 +182,20 @@
 
         },
 
-        show_form: function () {
+        delete: function (event) {
 
-            var ticket_id      = this.ticket().id(),
-                title_selector = '#fp_requirement_title_' + ticket_id,
-                data           = {
-                    ticket_id: this.ticket().id()
-                };
+            var is_sidebar     = this.currentLocation() === 'ticket_sidebar',
+                requirement_id = this.$(event.currentTarget).data('requirement-id'),
+                ticket_id      = is_sidebar ? this.ticket().id() : this.$(event.currentTarget).data('ticket-id');
 
-            this.switchTo('requirement_form', data);
-            this.$(title_selector).focus();
+            this.ajax('delete_requirement', ticket_id, requirement_id).done(function () {
 
-        },
+                if (is_sidebar) {
+                    this.load_ticket_sidebar();
+                }
 
-        save: function (event) {
+            });
 
-            var self           = this,
-                $target        = this.$(event.target),
-                ticket_id      = this.ticket().id(),
-                requirement_id = $target.data('requirement-id'),
-                $title         = this.$($target.find('[name=title]')),
-                $body          = this.$($target.find('[name=body]')),
-                $sort          = this.$($target.find('[name=sort]')),
-                data           = {
-                    title:            $title.val(),
-                    body:             $body.val(),
-                    sort:             $sort.length ? $sort.val() : 99,
-                    created_by_email: this.currentUser().email()
-                };
-
-            event.preventDefault();
-
-            if (requirement_id) {
-
-                self.ajax('update', ticket_id, requirement_id, data).done(function () {
-
-                    services.notify('Requirement updated', 'notice');
-                    self.load_ticket_sidebar();
-
-                });
-
-            } else {
-
-                self.ajax('create', ticket_id, data).done(function () {
-
-                    services.notify('New requirement added', 'notice');
-                    self.show_form();
-
-                });
-
-            }
-
-        },
-
-        cancel_form: function () {
-            this.load_ticket_sidebar();
         }
 
     };
