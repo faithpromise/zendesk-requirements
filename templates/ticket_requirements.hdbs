@@ -9,7 +9,7 @@
       <td class="Requirement">
         <h2 class="Requirement-title js_edit" title="Edit" data-requirement-id="{{id}}">{{title}}</h2>
         <span class="Requirement-description js_edit_body_inline" id="fp_requirement_description_{{id}}" title="Edit answer" data-requirement-id="{{id}}">
-          {{#if body}} {{body}} {{else}} <span class="u-link">add answer</span> {{/if}}
+          {{#if body}} {{body}} {{else}} <span class="u-link u-link--negative">add answer</span> {{/if}}
         </span>
       </td>
       <td class="Requirement-trash">
