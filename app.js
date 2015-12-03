@@ -68,6 +68,7 @@
 
             if (event.firstLoad) {
                 this.load_ticket_sidebar();
+                this.load_styles();
             }
 
         },
@@ -89,6 +90,11 @@
                 this.switchTo('ticket_requirements', view_data);
             });
 
+        },
+
+        load_styles: function () {
+            var url = this.assetURL('styles.css');
+            this.$('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
         },
 
         new: function () {
