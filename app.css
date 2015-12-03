@@ -11,6 +11,11 @@
     color:           #005580;
     text-decoration: underline;
   }
+
+  &--negative,
+  &--negative:hover {
+    color: red;
+  }
 }
 
 /*
@@ -54,12 +59,18 @@ header {
 
   td {
     padding:        5px 3px;
-    vertical-align: middle !important;
+    vertical-align: middle;
   }
 
   .Requirement-heading:hover td {
     background-color: #ececec;
     transition:       .1s background-color ease-in-out;
+  }
+
+  .Requirement-trash {
+    width:          18px;
+    padding-left:   10px;
+    vertical-align: top;
   }
 }
 
@@ -91,10 +102,28 @@ header {
   line-height: 18px;
 }
 
-.Requirement-trash {
-
-}
-
 .Requirement-trash-icon {
   cursor: pointer;
+}
+
+/*
+  Form
+  ================================================== */
+
+.Form-field {
+  margin-bottom: 8px;
+}
+
+.Form-label {
+  margin:    4px 0 6px 0;
+  font-size: 11px;
+  color:     #999;
+}
+
+.Form-field {
+  width: calc(100% - 10px);
+}
+
+.Form-actions {
+  margin-top: 20px;
 }
