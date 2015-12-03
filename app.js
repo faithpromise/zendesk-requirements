@@ -8,7 +8,8 @@
             'click .js_edit':             'edit',
             'click .js_edit_body_inline': 'edit_body_inline',
             'submit .js_save':            'save',
-            'click .js_cancel_edit':      'cancel_edit'
+            'click .js_cancel_edit':      'cancel_edit',
+            'click .js_delete':           'delete'
         },
 
         requests: {
@@ -134,7 +135,7 @@
             this.load_ticket_sidebar();
         },
 
-        edit: function(event) {
+        edit: function (event) {
 
             var requirement_id = this.$(event.currentTarget).data('requirement-id');
 
@@ -184,16 +185,16 @@
 
         delete: function (event) {
 
-            var is_sidebar     = this.currentLocation() === 'ticket_sidebar',
-                requirement_id = this.$(event.currentTarget).data('requirement-id'),
-                ticket_id      = is_sidebar ? this.ticket().id() : this.$(event.currentTarget).data('ticket-id');
+            var $target           = this.$(event.currentTarget),
+                requirement_id    = $target.data('requirement-id'),
+                requirement_title = $target.data('requirement-title');
 
-            this.ajax('delete_requirement', ticket_id, requirement_id).done(function () {
+            if (!confirm('Are you sure you want to delete the requirement,\n"' + requirement_title + '"')) {
+                return;
+            }
 
-                if (is_sidebar) {
-                    this.load_ticket_sidebar();
-                }
-
+            this.ajax('delete', requirement_id).done(function () {
+                this.load_ticket_sidebar();
             });
 
         }
