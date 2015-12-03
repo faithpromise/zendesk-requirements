@@ -1,5 +1,8 @@
 (function () {
 
+    var is_dev = /zat=true/.test(window.location.href),
+        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+
     return {
         events: {
             'app.activated':              'on_app_activated',
@@ -16,7 +19,7 @@
 
             requirements: function (ticket_ids) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements',
+                    url:      api_url + '/api/ticket-requirements',
                     data:     { zendesk_ticket_ids: ticket_ids },
                     dataType: 'json',
                     cors:     true
@@ -25,7 +28,7 @@
 
             requirement: function (requirement_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements/' + requirement_id,
+                    url:      api_url + '/api/ticket-requirements/' + requirement_id,
                     dataType: 'json',
                     cors:     true
                 };
@@ -33,7 +36,7 @@
 
             create: function (data) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements',
+                    url:      api_url + '/api/ticket-requirements',
                     type:     'POST',
                     dataType: 'json',
                     data:     data,
@@ -43,7 +46,7 @@
 
             update: function (data, requirement_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements/' + requirement_id,
+                    url:      api_url + '/api/ticket-requirements/' + requirement_id,
                     type:     'PATCH',
                     dataType: 'json',
                     data:     data,
@@ -53,7 +56,7 @@
 
             delete: function (requirement_id) {
                 return {
-                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-requirements/' + requirement_id,
+                    url:  api_url + '/api/ticket-requirements/' + requirement_id,
                     type: 'DELETE',
                     cors: true
                 };
