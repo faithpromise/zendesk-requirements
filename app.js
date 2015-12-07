@@ -1,6 +1,6 @@
 (function () {
 
-    var api_url;
+    var api_url, $head;
 
     /*
      Zendesk says don't access window, but I can't think of
@@ -9,16 +9,18 @@
      */
     (function () {
 
-        var $      = this.jQuery,
-            window = this,
+        var window = this,
             is_dev = /zat=true/.test(window.location.href),
-            stylesheet_url;
+            style  = window.document.createElement('style'),
+            app_id = is_dev ? '0' : '76309';
 
-        api_url    = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
 
-        stylesheet_url = (is_dev ? 'http://localhost:4567' : '') + '/styles.css';
+        style.appendChild(window.document.createTextNode(''));
+        window.document.head.appendChild(style);
 
-        $('head').append('<link rel="stylesheet" type="text/css" href="' + stylesheet_url + '">');
+        style.sheet.insertRule('.app-' + app_id + '.apps_ticket_sidebar { background-color: transparent !important; padding-left: 10px !important; padding-right: 10px !important; clear: both; width: 330px !important; border: none !important; }', 0);
+        style.sheet.insertRule('.app-' + app_id + '.apps_nav_bar { margin-top: 0 !important; padding: 0 !important; }', 0);
 
     })();
 
