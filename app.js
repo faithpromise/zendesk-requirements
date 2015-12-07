@@ -1,6 +1,6 @@
 (function () {
 
-    var is_dev, api_url;
+    var api_url;
 
     /*
      Zendesk says don't access window, but I can't think of
@@ -8,8 +8,18 @@
      than accessing the window object.
      */
     (function () {
-        is_dev  = /zat=true/.test(this.location.href);
-        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+
+        var $      = this.jQuery,
+            window = this,
+            is_dev = /zat=true/.test(window.location.href),
+            stylesheet_url;
+
+        api_url    = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+
+        stylesheet_url = (is_dev ? 'http://localhost:4567' : '') + '/styles.css';
+
+        $('head').append('<link rel="stylesheet" type="text/css" href="' + stylesheet_url + '">');
+
     })();
 
     return {
@@ -77,7 +87,6 @@
 
             if (event.firstLoad) {
                 this.load_ticket_sidebar();
-                this.load_styles();
             }
 
         },
@@ -99,11 +108,6 @@
                 this.switchTo('ticket_requirements', view_data);
             });
 
-        },
-
-        load_styles: function () {
-            var url = this.assetURL('styles.css');
-            this.$('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
         },
 
         new: function () {
