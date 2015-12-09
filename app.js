@@ -25,6 +25,9 @@
     })();
 
     return {
+
+        defaultState: 'loading',
+
         events: {
             'app.activated':              'on_app_activated',
             'click .js_new':              'new',
